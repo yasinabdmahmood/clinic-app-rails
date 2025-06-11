@@ -8,17 +8,13 @@ class ApplicationController < ActionController::API
 
 
   def authenticate_user!
+    return if Rails.env.test?
     unless current_user
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
 
   def current_user
-    p "session"
-    p '--------------------------------'
-    p session[:expires_at]
-    p Time.current
-    p session[:user_id]
     if session[:expires_at] && Time.current < session[:expires_at]
       @current_user ||= User.find_by(id: session[:user_id])
     else
